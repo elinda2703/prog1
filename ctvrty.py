@@ -17,4 +17,8 @@ while x:
 
 print("nnnnnn")
 
+name="Kvido"
+age=58
+astr= f"Ahoj {name}, {age} starý"
+print(astr)
 

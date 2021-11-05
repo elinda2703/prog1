@@ -1,67 +1,105 @@
-from turtle import forward,left,right,penup,pendown,speed,exitonclick,circle,setposition,color,pensize
+from turtle import forward, left, right, penup, pendown, speed, exitonclick, circle, setposition, color, pensize
 from math import sqrt
-#speed(1)
+speed(0)
 
-#nakreslí hrací pole
-def hraci_pole(a,b,d):
-    for j in range (b):
-        for i in range (a):
-            for k in range (4):
-                forward (d)
-                left (90)
-            forward(d)
+# nakreslí hrací pole
+
+
+def nakresli_hraci_pole(sirka, delka, velikost_policka):
+    for j in range(delka):
+        for i in range(sirka):
+            for k in range(4):
+                forward(velikost_policka)
+                left(90)
+            forward(velikost_policka)
         left(180)
-        forward(a*d)
+        forward(sirka*velikost_policka)
         right(90)
-        forward(d)
+        forward(velikost_policka)
         right(90)
-
-#nakreslí kolečko
-def kolecko(a,b,d):
     penup()
-    while(True):        #kontrola (ne)platných vstupů
-        x1=int(input("hráči 1, zadej x"))
-        y1=int(input("hráči 1, zadej y"))
-        if (x1>a or y1>b or x1<=0 or y1<=0):
-            print ("neplatný vstup")
+
+# získá parametry pole a ošetří chybné vstupy
+
+
+def ziskej_kladne_cislo(vyzvani_hrace, dolni_mez):
+    while(True):
+        p = int(input(vyzvani_hrace))
+        if (dolni_mez > p):
+            print("Chybný vstup")
         else:
-            break
-    setposition((x1-1)*d+d/2,(y1-1)*d+d/6)
+            return p
+
+# vrátí parametry pole
+
+
+def nacti_parametry_pole():
+    a = ziskej_kladne_cislo("zadej počet řádků", 1)
+    b = ziskej_kladne_cislo("zadej počet sloupců", 1)
+    d = ziskej_kladne_cislo("zadej velikost políčka (aspoň 20, ať to jde vidět)", 20)
+    return a, b, d
+
+# získá souřadnice na hracím poli a oštří chybné vstupy
+
+
+def ziskej_souradnici(vyzvani_hrace, dolni_mez, horni_mez):
+    while(True):
+        p = int(input(vyzvani_hrace))
+        if (p > horni_mez) or (dolni_mez > p):
+            print("Chybný vstup")
+        else:
+            return p
+
+# vrátí souřadnice
+
+
+def ziskej_souradnice(sirka, vyska, hrac):
+    x = ziskej_souradnici(f"Hráči {hrac}, zadej souřadnici x", 1, sirka)
+    y = ziskej_souradnici(f"Hráči {hrac}, zadej souřadnici y", 1, vyska)
+    return x, y
+
+
+# nakreslí kolečko
+def kolecko(x, y, velikost_policka):
+    setposition((x-1)*velikost_policka+velikost_policka/2, (y-1)*velikost_policka+velikost_policka/6)
     pendown()
     color('blue')
-    circle(d/3)
-
-#nakreslí křížek
-def krizek(a,b,d):
+    circle(velikost_policka/3)
     penup()
-    while(True):        #kontrola (ne)platných vstupů
-        x2=int(input("hráči 2, zadej x"))
-        y2=int(input("hráči 2, zadej y"))
-        if (x2>a or y2>b or x2<=0 or y2<=0):
-            print ("neplatný vstup")
-        else:
-            break
-    setposition((x2-1)*d+d/6,(y2-1)*d+d/6)
+
+# nakreslí křížek
+
+
+def krizek(x, y, velikost_policka):
+    setposition((x-1)*velikost_policka+velikost_policka/6, (y-1)*velikost_policka+velikost_policka/6)
     pendown()
     color('red')
     left(45)
-    forward(2/3*d*sqrt(2))
+    forward(2/3*velikost_policka*sqrt(2))
     penup()
     right(135)
-    forward(2*d/3)
+    forward(2*velikost_policka/3)
     pendown()
     right(135)
-    forward(2/3*d*sqrt(2))
+    forward(2/3*velikost_policka*sqrt(2))
     right(135)
+    penup()
 
-#výsledná funkce
-def piskvorky(a,b,d):
-    hraci_pole(a,b,d)
+# výsledná funkce
+
+
+def piskvorky(sirka, vyska, velikost_policka):
+    nakresli_hraci_pole(sirka, vyska, velikost_policka)
     pensize(3)
-    for l in range(int(a*b/2)):
-        kolecko(a,b,d)
-        krizek(a,b,d)
-    if (a*b%2==1):          #hráč 1 (kolečko) hraje o kolo navíc, pokud má hrací pole lichý počet políček
-        kolecko(a,b,d)
+    for r in range(sirka*vyska):
+        if (r % 2 == 1):
+            x, y = ziskej_souradnice(sirka, vyska, 2)
+            kolecko(x, y, velikost_policka)
+        else:
+            x, y = ziskej_souradnice(sirka, vyska, 1)
+            krizek(x, y, velikost_policka)
     exitonclick()
-piskvorky (int(input("zadej počet řádků")),int(input("zadej počet sloupců")),int(input("zadej velikost políčka")))
+
+
+pocet_radku, delka, velikost_policka = nacti_parametry_pole()
+piskvorky(pocet_radku, delka, velikost_policka)
